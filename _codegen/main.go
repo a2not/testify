@@ -297,15 +297,27 @@ func (f *testFunc) CommentWithoutT(receiver string) string {
 }
 
 func (f *testFunc) Replace(comment, search, replace string) string {
-	// replace strings, but preserve "*assert.CollectT"
-	const (
-		assertCollectT            = "*assert.CollectT"
-		assertCollectTPlaceholder = "__COLLECT_T_PLACEHOLDER__"
-	)
+	// replace strings, while preserving some identifiers
+	identifiersToBePreserved := []string{
+		"*assert.CollectT",
+	}
+	placeholderFromIdentifier := func(ident string) string {
+		return fmt.Sprintf("__%s_PLACEHOLDER___", ident)
+	}
 
-	protected := strings.ReplaceAll(comment, assertCollectT, assertCollectTPlaceholder)
-	result := strings.ReplaceAll(protected, search, replace)
-	return strings.ReplaceAll(result, assertCollectTPlaceholder, assertCollectT)
+	for _, ident := range identifiersToBePreserved {
+		placeholder := placeholderFromIdentifier(ident)
+		comment = strings.ReplaceAll(comment, ident, placeholder)
+	}
+
+	comment = strings.ReplaceAll(comment, search, replace)
+
+	for _, ident := range identifiersToBePreserved {
+		placeholder := placeholderFromIdentifier(ident)
+		comment = strings.ReplaceAll(comment, placeholder, ident)
+	}
+
+	return comment
 }
 
 // Standard header https://go.dev/s/generatedcode.
