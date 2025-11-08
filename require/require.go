@@ -429,7 +429,7 @@ func Eventually(t TestingT, condition func() bool, waitFor time.Duration, tick t
 //		time.Sleep(8*time.Second)
 //		externalValue = true
 //	}()
-//	require.EventuallyWithT(t, func(c __*require.CollectT_PLACEHOLDER___) {
+//	require.EventuallyWithT(t, func(c *assert.CollectT) {
 //		// add assertions as needed; any assertion failure will fail the current tick
 //		require.True(c, externalValue, "expected 'externalValue' to be true")
 //	}, 10*time.Second, 1*time.Second, "external state has not changed to 'true'; still false")
@@ -457,7 +457,7 @@ func EventuallyWithT(t TestingT, condition func(collect *assert.CollectT), waitF
 //		time.Sleep(8*time.Second)
 //		externalValue = true
 //	}()
-//	require.EventuallyWithTf(t, func(c __*require.CollectT_PLACEHOLDER___, "error message %s", "formatted") {
+//	require.EventuallyWithTf(t, func(c *assert.CollectT, "error message %s", "formatted") {
 //		// add assertions as needed; any assertion failure will fail the current tick
 //		require.True(c, externalValue, "expected 'externalValue' to be true")
 //	}, 10*time.Second, 1*time.Second, "external state has not changed to 'true'; still false")

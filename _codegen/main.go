@@ -302,7 +302,8 @@ func (f *testFunc) Replace(comment, search, replace string) string {
 		"*assert.CollectT",
 	}
 	placeholderFromIdentifier := func(ident string) string {
-		return fmt.Sprintf("__%s_PLACEHOLDER___", ident)
+		// assuming none of the identifiers to be replaced is ALL CAPS
+		return fmt.Sprintf("__%s_PLACEHOLDER___", strings.ToUpper(strings.ReplaceAll(ident, ".", "_")))
 	}
 
 	for _, ident := range identifiersToBePreserved {
