@@ -106,9 +106,7 @@ func parseTemplates() (*template.Template, *template.Template, error) {
 		}
 		funcTemplate = string(f)
 	}
-	tmpl, err := template.New("function").Funcs(template.FuncMap{
-		"replace": strings.ReplaceAll,
-	}).Parse(funcTemplate)
+	tmpl, err := template.New("function").Parse(funcTemplate)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -296,6 +294,18 @@ func (f *testFunc) CommentWithoutT(receiver string) string {
 	search := fmt.Sprintf("assert.%s(t, ", f.DocInfo.Name)
 	replace := fmt.Sprintf("%s.%s(", receiver, f.DocInfo.Name)
 	return strings.Replace(f.Comment(), search, replace, -1)
+}
+
+func (f *testFunc) Replace(comment, search, replace string) string {
+	// replace strings, but preserve "*assert.CollectT"
+	const (
+		assertCollectT            = "*assert.CollectT"
+		assertCollectTPlaceholder = "__COLLECT_T_PLACEHOLDER__"
+	)
+
+	protected := strings.ReplaceAll(comment, assertCollectT, assertCollectTPlaceholder)
+	result := strings.ReplaceAll(protected, search, replace)
+	return strings.ReplaceAll(result, assertCollectTPlaceholder, assertCollectT)
 }
 
 // Standard header https://go.dev/s/generatedcode.
