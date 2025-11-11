@@ -299,7 +299,7 @@ func (f *testFunc) CommentWithoutT(receiver string) string {
 func (f *testFunc) Replace(comment, search, replace string) string {
 	// replace strings, while preserving some identifiers
 	identifiersToBePreserved := []string{
-		"*assert.CollectT",
+		"assert.CollectT",
 	}
 	placeholderFromIdentifier := func(ident string) string {
 		// assuming none of the identifiers to be replaced is ALL CAPS
