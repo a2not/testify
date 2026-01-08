@@ -288,7 +288,9 @@ func (f *testFunc) CommentFormat() string {
 	search := fmt.Sprintf("%s", f.DocInfo.Name)
 	replace := fmt.Sprintf("%sf", f.DocInfo.Name)
 	comment := strings.Replace(f.Comment(), search, replace, -1)
-	exp := regexp.MustCompile(replace + `\(((\(\)|[^\n])+)\)`)
+	// Use a more specific regex that doesn't match function signatures within callbacks
+	// This regex matches the main function call but stops at inner function declarations
+	exp := regexp.MustCompile(replace + `\((([^()]*|\([^()]*\))*)\)`)
 	return exp.ReplaceAllString(comment, replace+`($1, "error message %s", "formatted")`)
 }
 
