@@ -285,12 +285,14 @@ func (f *testFunc) Comment() string {
 }
 
 func (f *testFunc) CommentFormat() string {
-	search := fmt.Sprintf("%s", f.DocInfo.Name)
+	search := f.DocInfo.Name
 	replace := fmt.Sprintf("%sf", f.DocInfo.Name)
-	comment := strings.Replace(f.Comment(), search, replace, -1)
-	// TODO:
-	// Use a more specific regex that doesn't match function signatures within callbacks
-	// This regex matches the main function call but stops at inner function declarations
+	comment := strings.ReplaceAll(f.Comment(), search, replace)
+	if strings.Contains(search, "EventuallyWithT") {
+		// NOTE: EventuallyWithT has msgAndArgs at the end. It needs to be omitted.
+		// TODO: find a better way to do this. It fails if the original comment changed.
+		comment = strings.Replace(comment, `, "external state has not changed to 'true'; still false"`, "", 1)
+	}
 	exp := regexp.MustCompile(replace + `\((([^()]*|\([^()]*\))*)\)`)
 	return exp.ReplaceAllString(comment, replace+`($1, "error message %s", "formatted")`)
 }
